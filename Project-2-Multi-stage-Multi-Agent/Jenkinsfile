@@ -1,33 +1,23 @@
 pipeline {
-    agent { label 'Docker-Agent' } 
+    agent none  // Prevents execution on the master node
 
     stages {
         stage('Back-end') {
-            agent {
-                docker { 
-                    image 'maven:3.8.7-openjdk-18'
-                    args '--rm' // Removes container after execution
-                }
-            }
+            agent { label 'Docker-Agent' }  // Ensure it runs on the correct node
             steps {
                 script {
                     echo '🔹 Running Maven inside Docker...'
-                    sh 'mvn --version'
+                    sh 'docker run --rm maven:3.8.7-openjdk-18 mvn --version'
                 }
             }
         }
 
         stage('Front-end') {
-            agent {
-                docker { 
-                    image 'node:16-alpine' 
-                    args '--rm'
-                }
-            }
+            agent { label 'Docker-Agent' }  // Runs on the Docker-enabled agent
             steps {
                 script {
                     echo '🔹 Running Node.js inside Docker...'
-                    sh 'node --version'
+                    sh 'docker run --rm node:16-alpine node --version'
                 }
             }
         }
