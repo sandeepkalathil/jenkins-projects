@@ -106,7 +106,7 @@ CMD ["npm", "start"]
 docker build -t my-html-website .
 
 # Run the container
-docker run -d -p 8080:8080 my-html-website
+docker run -d -p 8020:8020 my-html-website
 ```
 ✅ Your website should now be running at [http://localhost:8020](http://localhost:8020).
 
