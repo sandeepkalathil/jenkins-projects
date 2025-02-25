@@ -19,22 +19,27 @@ pipeline {
 }
         
         stage('Deploy New Container') {
-            agent { label 'Docker-Agent' }
-            steps {
-                script {
-                    echo '🔹 Pulling latest image from Docker Hub...'
-                    sh "docker pull $DOCKER_IMAGE"
-
-                    echo '🔹 Stopping any existing container...'
-                    sh "docker stop $CONTAINER_NAME || true"
-                    sh "docker rm $CONTAINER_NAME || true"
-
-                    echo '🔹 Running a new container...'
-                    sh """
-                    docker run -d --name $CONTAINER_NAME -p $EXPOSED_PORT:80 $DOCKER_IMAGE
-                    """
-                }
+    agent { label 'Docker-Agent' }
+    steps {
+        script {
+            echo '🔹 Logging into Docker Hub...'
+            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
             }
+
+            echo '🔹 Pulling latest image from Docker Hub...'
+            sh "docker pull $DOCKER_IMAGE"
+
+            echo '🔹 Stopping any existing container...'
+            sh "docker stop $CONTAINER_NAME || true"
+            sh "docker rm $CONTAINER_NAME || true"
+
+            echo '🔹 Running a new container...'
+            sh """
+            docker run -d --name $CONTAINER_NAME -p $EXPOSED_PORT:8020 $DOCKER_IMAGE
+            """
         }
+    }
+}
     }
 }
