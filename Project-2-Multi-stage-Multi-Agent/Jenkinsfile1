@@ -1,0 +1,45 @@
+pipeline {
+    agent none  // No default agent, each stage defines its own
+
+    stages {
+        stage('Checkout Code') {
+            agent { label 'Docker-Agent' }  // Ensures it runs on a Docker-enabled agent
+            steps {
+                script {
+                    echo '🔹 Checking out code...'
+                    sh 'git clone https://github.com/example/repository.git'
+                }
+            }
+        }
+
+        stage('Back-end') {
+            agent { label 'Docker-Agent' }  // Ensures it runs on the correct node
+            steps {
+                script {
+                    echo '🔹 Running Maven inside Docker...'
+                    sh 'docker run --rm -v $(pwd):/app -w /app maven:3.8.7-openjdk-18 mvn --version'
+                }
+            }
+        }
+
+        stage('Front-end') {
+            agent { label 'Docker-Agent' }  // Runs on the Docker-enabled agent
+            steps {
+                script {
+                    echo '🔹 Running Node.js inside Docker...'
+                    sh 'docker run --rm -v $(pwd):/app -w /app node:16-alpine node --version'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            agent { label 'Docker-Agent' }
+            steps {
+                script {
+                    echo '🔹 Deploying application...'
+                    sh 'echo Deployment steps go here'
+                }
+            }
+        }
+    }
+}
