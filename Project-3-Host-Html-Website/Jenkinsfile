@@ -7,25 +7,13 @@ pipeline {
         EXPOSED_PORT = '8020'  // Port to expose on the host
     }
 
-    stages {
 
-        stage('Login to Docker Hub') {
-    agent { label 'Docker-Agent' }
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-            sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-        }
-    }
-}
         
         stage('Deploy New Container') {
     agent { label 'Docker-Agent' }
     steps {
         script {
-            echo '🔹 Logging into Docker Hub...'
-            withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-            }
+        
 
             echo '🔹 Pulling latest image from Docker Hub...'
             sh "docker pull $DOCKER_IMAGE"
