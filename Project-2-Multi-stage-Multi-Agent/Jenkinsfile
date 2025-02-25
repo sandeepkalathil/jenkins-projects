@@ -2,14 +2,13 @@ pipeline {
     agent none  // No default agent, each stage defines its own
 
     stages {
-
         stage('Checkout Code') {
             agent { label 'Docker-Agent' }   // Ensures it runs on the correct node
             steps {
                 git 'https://github.com/sandeepkalathil/jenkins-projects.git'
             }
-        }
-        
+        }  // ✅ Closing bracket added here
+
         stage('Back-end') {
             agent { label 'Docker-Agent' }  // Ensures it runs on the correct node
             steps {
