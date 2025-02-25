@@ -74,5 +74,5 @@ sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/known_hosts
 # Restart Jenkins to apply changes
 echo "Restarting Jenkins..."
 sudo systemctl restart jenkins
-
+    
 echo "Setup completed. Try adding the Jenkins agent now."

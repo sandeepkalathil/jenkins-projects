@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 # Variables
 USERNAME="ubuntu"
 PASSWORD="AnSiBl#&8B#@"

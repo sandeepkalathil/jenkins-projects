@@ -25,3 +25,23 @@ Click "OK"
 Click "Save and Launch".
 
 If the agent comes online, everything is set up correctly!
+
+
+
+Fix 1: Ensure Correct PAT Permissions
+You need to regenerate your Personal Access Token (PAT) with the correct permissions.
+
+1️⃣ Go to GitHub → Settings → Developer Settings → Personal Access Tokens
+2️⃣ Click "Generate new token (classic)"
+3️⃣ Select "repo" scope to grant access to private repositories:
+
+✅ repo → Full control of private repositories
+✅ workflow (if using GitHub Actions)
+4️⃣ Click "Generate Token" and copy it immediately
+5️⃣ Update Jenkins Credentials:
+Go to Jenkins → Manage Jenkins → Credentials
+Delete the old credential
+Add a new "Username and Password" credential
+Username: Your GitHub username
+Password: Paste the newly generated PAT
+6️⃣ Save and retry the job
