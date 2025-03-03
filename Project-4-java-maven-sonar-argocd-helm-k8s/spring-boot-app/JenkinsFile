@@ -37,18 +37,25 @@ stage('Install Maven & Verify') {
     
 
         stage('Static Code Analysis') {
-            environment {
-                SONAR_URL = "http://13.50.5.215:9000/"
-            }
-            steps {
-                withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-                    sh '''
-                    cd Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app
-                    mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}
-                    '''
-                }
+    environment {
+        SONAR_URL = "http://13.50.5.215:9000/"
+    }
+    steps {
+        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
+            script {
+                sh '''
+                echo "Running SonarQube analysis inside Docker..."
+
+                docker run --rm \
+                -v $(pwd)/Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app:/app \
+                -w /app \
+                sandeepkalathil/maven-abhishek-docker-agent:v1 \
+                mvn sonar:sonar -Dsonar.login=${SONAR_AUTH_TOKEN} -Dsonar.host.url=${SONAR_URL}
+                '''
             }
         }
+    }
+}
 
         stage('Build and Push Docker Image') {
             environment {
