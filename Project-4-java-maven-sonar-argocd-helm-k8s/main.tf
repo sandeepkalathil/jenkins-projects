@@ -9,7 +9,7 @@ resource "aws_key_pair" "sand" {
 
 resource "aws_instance" "Jenkins" {
   ami                  = "ami-09a9858973b288bdd"
-  instance_type        = "t3.micro"
+  instance_type        = "t3.large"
   key_name             = aws_key_pair.sand.key_name
   subnet_id            = "subnet-0db3301d81441e6d0"
   security_groups      = ["sg-0bf2dc323a4381c50"]
