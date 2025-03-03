@@ -17,7 +17,7 @@ resource "aws_instance" "Jenkins" {
   iam_instance_profile = "MySessionManagerrole"
 
   root_block_device {
-    volume_size = "8"
+    volume_size = "20"
     volume_type = "gp3"
   }
 
@@ -38,23 +38,23 @@ resource "aws_instance" "Jenkins" {
       "echo 'deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/' | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null",
       "sudo apt-get update",
       "sudo apt-get install jenkins -y"
-   ]
+    ]
 
 
   }
 
-   provisioner "file" {
+  provisioner "file" {
     source      = "ssh-password-less-Control-Node.sh"
     destination = "/tmp/ssh-password-less-Control-Node.sh"
 
     connection {
       type        = "ssh"
-      user        = "ubuntu"  # Adjust based on your AMI (ubuntu, ansadmin, etc.)
+      user        = "ubuntu" # Adjust based on your AMI (ubuntu, ansadmin, etc.)
       private_key = file("C:/Users/SANDEEP/.ssh/id_rsa")
       host        = self.public_ip
     }
   }
-  
+
   tags = {
     Name = "Jenkins-Master"
   }
@@ -72,7 +72,7 @@ resource "aws_instance" "Jenkins-Docker" {
   iam_instance_profile = "MySessionManagerrole"
 
   root_block_device {
-    volume_size = "8"
+    volume_size = "20"
     volume_type = "gp3"
   }
 
@@ -86,31 +86,32 @@ resource "aws_instance" "Jenkins-Docker" {
 
 
   provisioner "remote-exec" {
-    inline = ["echo 'The instance is accessible'",
+      inline = ["echo 'The instance is accessible'",
       "sudo apt update",
-      "sudo apt install -y unzip wget openjdk-17-jdk",
-
-      # Create sonarqube user and setup directories
-      "sudo adduser --system --no-create-home --group sonarqube",
-      "sudo mkdir -p /home/sonarqube",
-      "sudo chown -R sonarqube:sonarqube /home/sonarqube",
-
-      # Switch to sonarqube user and install SonarQube
-      "sudo su - sonarqube -c 'cd /home/sonarqube && wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.4.0.54424.zip'",
-      "sudo su - sonarqube -c 'cd /home/sonarqube && unzip sonarqube-9.4.0.54424.zip'",
-      "sudo su - sonarqube -c 'chmod -R 755 /home/sonarqube/sonarqube-9.4.0.54424'",
-      "sudo su - sonarqube -c 'chown -R sonarqube:sonarqube /home/sonarqube/sonarqube-9.4.0.54424'",
-
-      # Start SonarQube
-      "sudo su - sonarqube -c 'nohup /home/sonarqube/sonarqube-9.4.0.54424/bin/linux-x86-64/sonar.sh start &'"
-      
+      "sudo apt install docker.io -y",
+      "sudo apt install openjdk-17-jre unzip wget -y",
+      "sudo systemctl start docker",
+      "sudo systemctl enable docker",
+      "sudo usermod -aG docker ubuntu",
+       "sudo useradd jenkins",
+      "sudo usermod -aG docker jenkins",
+      "sudo systemctl restart docker",
+       
     ]
+  }
+   provisioner "file" {
+    source      = "installation.sh"
+    destination = "/tmp/installation.sh"
 
-
+    connection {
+      type        = "ssh"
+      user        = "ubuntu" # Adjust based on your AMI (ubuntu, ansadmin, etc.)
+      private_key = file("C:/Users/SANDEEP/.ssh/id_rsa")
+      host        = self.public_ip
+    }
   }
 
-    
-  tags = {
+tags = {
     Name = "docker-Jenkins"
   }
 }
