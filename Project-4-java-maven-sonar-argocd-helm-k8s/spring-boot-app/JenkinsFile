@@ -82,7 +82,7 @@ stage('Install Maven & Verify') {
                 GIT_USER_NAME = "sandeepkalathil"
             }
             steps {
-                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')]) {
                     sh '''
                     git config user.email "sandeepkalathil@gmail.com"
                     git config user.name "sandeep kalathil"
