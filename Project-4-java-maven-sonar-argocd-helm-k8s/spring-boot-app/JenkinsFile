@@ -1,12 +1,7 @@
 pipeline {
     agent { label 'Docker-Agent' }  // Run on the Docker Agent
 
-    docker {
-                    image 'sandeepkalathil/maven-abhishek-docker-agent:v1'
-                    args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-                }
-
-    stages {
+       stages {
         stage('Checkout') {
             steps {
                 sh 'echo "Starting Checkout..."'
@@ -23,6 +18,8 @@ pipeline {
                 sh 'echo "Listing project files:"'
                 sh 'ls -ltr'
                 // Build the project and create a JAR file
+                sh 'docker pull sandeepkalathil/maven-abhishek-docker-agent:v1'
+                sh 'docker run -d sandeepkalathil/maven-abhishek-docker-agent:v1'
                 sh 'cd Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
             }
         }
