@@ -24,7 +24,7 @@ pipeline {
                 sh 'echo "Listing project files:"'
                 sh 'ls -ltr'
                 // Build the project and create a JAR file
-                sh 'cd Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
+                sh 'cd Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app && /usr/share/maven/bin/mvn clean package'
             }
         }
 
