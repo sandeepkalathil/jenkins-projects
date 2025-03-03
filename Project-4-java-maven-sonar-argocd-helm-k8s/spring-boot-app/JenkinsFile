@@ -19,7 +19,7 @@
             stage('Build and Test') {
                 agent {
                     docker {
-                        image 'abhishekf5/maven-abhishek-docker-agent:v1'
+                        image 'sandeepkalathil/maven-abhishek-docker-agent:v1'
                         args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
                     }
                 }
@@ -33,7 +33,7 @@
             stage('Static Code Analysis') {
                 agent {
                     docker {
-                        image 'abhishekf5/maven-abhishek-docker-agent:v1'
+                        image 'sandeepkalathil/maven-abhishek-docker-agent:v1'
                         args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
                     }
                 }
