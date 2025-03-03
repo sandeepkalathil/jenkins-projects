@@ -78,14 +78,14 @@ stage('Install Maven & Verify') {
 
         stage('Update Deployment File') {
             environment {
-                GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
-                GIT_USER_NAME = "iam-veeramalla"
+                GIT_REPO_NAME = "jenkins-projects"
+                GIT_USER_NAME = "sandeepkalathil"
             }
             steps {
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                     sh '''
-                    git config user.email "abhishek.xyz@gmail.com"
-                    git config user.name "Abhishek Veeramalla"
+                    git config user.email "sandeepkalathil@gmail.com"
+                    git config user.name "sandeep kalathil"
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git add Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
