@@ -9,24 +9,32 @@ pipeline {
             }
         }
 
-        stage('Build and Test') {
+stage('Install Maven & Verify') {
             steps {
                 script {
                     sh '''
                     echo "Pulling Maven Docker Image..."
                     docker pull sandeepkalathil/maven-abhishek-docker-agent:v1
 
-                    echo "Running a container and installing Maven..."
+                    echo "Checking Maven Version..."
                     docker run --rm sandeepkalathil/maven-abhishek-docker-agent:v1 mvn --version
-                    
                     '''
                 }
-                sh 'echo "Listing project files:"'
-                sh 'ls -ltr'
-                // Build the project and create a JAR file
-                sh 'cd Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app && /usr/share/maven/bin/mvn clean package'
             }
         }
+
+
+        stage('Build and Test') {
+            steps {
+                script {
+                    sh '''
+                    echo "Building the project using Maven inside Docker..."
+                    docker run --rm -v $(pwd)/Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app:/app -w /app sandeepkalathil/maven-abhishek-docker-agent:v1 mvn clean package
+                    '''
+                }
+            }
+        }
+    
 
         stage('Static Code Analysis') {
             environment {
