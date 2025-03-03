@@ -9,7 +9,14 @@ pipeline {
             }
         }
 
+        
+
         stage('Build and Test') {
+
+            docker {
+                    image 'sandeepkalathil/maven-abhishek-docker-agent:v1'
+                    args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
+                }
             steps {
                 sh 'echo "Listing project files:"'
                 sh 'ls -ltr'
