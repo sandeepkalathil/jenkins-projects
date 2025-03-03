@@ -18,6 +18,7 @@ pipeline {
 
                     echo "Running a container and installing Maven..."
                     docker run --rm sandeepkalathil/maven-abhishek-docker-agent:v1 mvn --version
+                    which mvn
                     '''
                 }
                 sh 'echo "Listing project files:"'
