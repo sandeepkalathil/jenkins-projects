@@ -82,7 +82,7 @@ stage('Install Maven & Verify') {
             steps {
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN')]) {
                     sh '''
-                    git config user.email "sandeepkalathil@gmail.com"
+                    git config user.email "kalathilsandeep@gmail.com"
                     git config user.name "sandeep kalathil"
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git add Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
