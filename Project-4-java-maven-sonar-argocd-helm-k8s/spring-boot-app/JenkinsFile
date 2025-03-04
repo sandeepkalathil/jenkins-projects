@@ -86,7 +86,7 @@ stage('Install Maven & Verify') {
                     sh '''
                     git config user.email "kalathilsandeep@gmail.com"
                     git config user.name "sandeep kalathil"
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                    sed -i "s|\\(abhishekf5/ultimate-cicd:\\)[0-9]\\+|\\1${BUILD_NUMBER}|g" Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git add Project-4-java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
