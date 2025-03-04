@@ -71,64 +71,7 @@ If you are using a private repository, you need to add the credentials by follow
 
 ✅ **Your Jenkins and Docker setup should now be complete!** 🎉
 
-### **Why Was ArgoCD Service Reverting to `ClusterIP`?**  
+kubectl get svc --all-namespaces | grep argocd
 
-The reason your **ArgoCD server service (`example-argocd-server`) kept reverting to `ClusterIP`** is because ArgoCD is managed by an **Operator** (`argocd-operator`). The operator continuously reconciles the state of the ArgoCD resources based on its configuration.
-
-#### **📌 Key Reasons It Didn't Change Initially:**
-1. **ArgoCD Operator Enforces Defaults:**  
-   - Your ArgoCD instance (`example-argocd`) is managed by the **`argocd-operator`**, which keeps the service type to its default (`ClusterIP`) unless explicitly changed in the ArgoCD custom resource (`argocd` CR).
-  
-2. **Direct `kubectl edit svc` Changes Are Overwritten:**  
-   - If you manually changed the service type using `kubectl edit svc`, the operator **automatically reverted it** because its desired state was still `ClusterIP` in the `argocd` CR.
-  
-3. **Persistent Fix Required Editing the `argocd` CR:**  
-   - The correct way to make the change persistent was to edit the `example-argocd` CR (`kubectl edit argocd example-argocd -n default`) and update:
-     ```yaml
-     spec:
-       server:
-         service:
-           type: NodePort
-     ```
-   - This ensured that the **operator itself updated and maintained** the NodePort setting.
-
-#### **🛠 How to Prevent This Issue in the Future**
-- **Always check if an Operator manages the resource** (`kubectl get subscriptions -A`).
-- **Edit the Custom Resource (CR) instead of directly modifying services**.
-- **Verify with `kubectl get svc -n <namespace>` after editing the CR**.
-
-Now, the change is persistent because the operator itself is enforcing `NodePort`. 🚀
-
-Since your ArgoCD instance is in the default namespace, try the following:
-
-1️⃣ Edit the ArgoCD Custom Resource
-bash
-Copy
-Edit
-kubectl edit argocd example-argocd -n default
-This will open the YAML configuration in your default text editor.
-
-2️⃣ Modify the server Service Type
-Find the server section and change the service type to NodePort:
-
-yaml
-Copy
-Edit
-spec:
-  server:
-    service:
-      type: NodePort
-Save and exit the editor.
-
-3️⃣ Restart ArgoCD to Apply Changes
-bash
-Copy
-Edit
-kubectl rollout restart deployment example-argocd-server -n default
-4️⃣ Verify the Change
-bash
-Copy
-Edit
-kubectl get svc -n default
-Ensure that example-argocd-server is now a NodePort service.
+kubectl port-forward service/example-argocd-server -n default --address 0.0.0.0 9090:443
 
